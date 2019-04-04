@@ -94,14 +94,14 @@ def main():
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
     net = test_cifar()
-    net = model.MobileNetV2(n_class=10)
-    # net = model.MobileNetV2_flgc(n_class=10)
+    # net = model.MobileNetV2(n_class=10)
+    net = model.MobileNetV2_flgc(n_class=10)
     # net = loss_function.add_flgc_loss(net)
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
-    optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
-    epochs = 10
+    epochs = 5
     for epoch in range(epochs):
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(trainloader, 0):

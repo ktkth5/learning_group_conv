@@ -105,3 +105,19 @@ class FLGC(nn.Module):
                                                 stride=self.stride,padding=self.padding))
             self.output_index += list(np.where(t==i)[0])
         return self.output_index
+
+
+
+def eval_set(self):
+    for module in self.children():
+        if isinstance(module, FLGC):
+            module.before_inference()
+        if isinstance(module, nn.Sequential):
+            for module_seq in module.children():
+                if isinstance(module_seq, FLGC):
+                    module_seq.before_inference()
+
+def add_eval_set(net_main_module):
+    net_main_module.eval_set = eval_set.__get__(net_main_module)
+
+    return net_main_module
