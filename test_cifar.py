@@ -82,12 +82,12 @@ def main():
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                             download=True, transform=transform)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=64,
                                               shuffle=True, num_workers=2)
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
                                            download=True, transform=transform)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=4,
+    testloader = torch.utils.data.DataLoader(testset, batch_size=64,
                                              shuffle=False, num_workers=2)
 
     classes = ('plane', 'car', 'bird', 'cat',
@@ -101,7 +101,7 @@ def main():
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-    epochs = 1
+    epochs = 10
     for epoch in range(epochs):
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(trainloader, 0):
@@ -119,12 +119,12 @@ def main():
 
             # print statistics
             running_loss += loss.item()
-            if i % 10 == 0:
-                print(f"epoch[{epoch}:{i}/{len(trainloader)}] loss: {running_loss/10:.4f}")
+            if i % 100 == 0:
+                print(f"epoch[{epoch}:{i}/{len(trainloader)}] loss: {running_loss/100:.4f}")
                 running_loss = 0.0
 
-            if i>500:
-                break
+            # if i>500:
+            #     break
 
     print('Finished Training')
 
