@@ -10,6 +10,7 @@ import torchvision.transforms as transforms
 from flgc import FLGC
 import loss_function
 import model
+import utils
 
 
 class _test_cifar(nn.Module):
@@ -97,6 +98,7 @@ def main():
     # net = model.MobileNetV2(n_class=10)
     net = model.MobileNetV2_flgc(n_class=10)
     # net = loss_function.add_flgc_loss(net)
+    net = model.model_module.add_eval_set(net)
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
