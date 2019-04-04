@@ -4,7 +4,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 class FLGC(nn.Module):
     """
     train()
@@ -106,42 +105,3 @@ class FLGC(nn.Module):
                                                 stride=self.stride,padding=self.padding))
             self.output_index += list(np.where(t==i)[0])
         return self.output_index
-
-
-def test_training():
-    _input = torch.randn(1, 4, 5, 5)
-    conv = FLGC(4, 5, 1, 1, 0, 1, 3)
-    target = torch.rand(1,5,5,5)
-    criterion = nn.MSELoss()
-    conv.train()
-    optimizer = torch.optim.SGD(conv.parameters(), lr=0.01)
-    for i in range(10):
-        input = _input.clone()
-        out = conv(input)
-        loss = criterion(out, target)
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-        print(loss.item(), conv.conv.mean().item(), conv.S.mean().item(), conv.T.mean().item())
-
-    conv.before_inference()
-    conv.eval()
-    with torch.no_grad():
-        input = _input.clone()
-        out = conv(input)
-        loss = criterion(out, target)
-        print(loss.item())
-
-
-
-if __name__=="__main__":
-    x = torch.randn(3,2,1,1)
-    x = torch.softmax(x, dim=1)
-    t = torch.argmax(x, dim=1).view(-1)
-
-    # print("t", t, t.shape)
-    # print(sum(t==1).item())
-    # print(list(np.where(t==1)[0]))
-
-
-    test_training()
