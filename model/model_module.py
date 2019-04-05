@@ -65,11 +65,11 @@ class FLGC(nn.Module):
             # t = torch.LongTensor([0, 1, 1, 2, 2])
             out = None
             debug_num_filter = 0
-            print("s t", s.shape, t.shape, torch.sum(t == 0).item(), torch.sum(t == 1).item(), torch.sum(s == 0).item(), sum(s == 1).item())
+            print("s t", s.shape, t.shape, torch.sum(t == 0).item(), torch.sum(t == 1).item(), torch.sum(s == 0).item(), torch.sum(s == 1).item())
             print("t", t, t.shape, t_hat.shape)
             for i in range(self.group_num):
-                num_input  = sum(s == i).item()
-                num_filter = sum(t == i).item()
+                num_input  = torch.sum(s == i).item()
+                num_filter = torch.sum(t == i).item()
                 debug_num_filter += num_filter
                 if num_input*num_filter==0:
                     print("num_input filter", num_input, num_filter)
@@ -113,8 +113,8 @@ class FLGC(nn.Module):
 
         self.debug_list = []
         for i in range(self.group_num):
-            num_input = sum(s==i).item()
-            num_filter = sum(t==i).item()
+            num_input = torch.sum(s==i).item()
+            num_filter = torch.sum(t==i).item()
             self.debug_list.append(num_filter)
             # print(i,"num input, num filter", num_input, num_filter)
             if num_input*num_filter==0:
