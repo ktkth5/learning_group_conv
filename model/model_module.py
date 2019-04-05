@@ -34,7 +34,7 @@ class FLGC(nn.Module):
         :param x: shape(B, input_channel, H, W)
         :return: shape(B, output_channel, H, W)
         """
-
+        print("self.final_inference", self.final_inference)
         if not self.final_inference: # if self.training
             B, _, H, W = x.size()
             s_hat = torch.softmax(self.S, dim=1)
