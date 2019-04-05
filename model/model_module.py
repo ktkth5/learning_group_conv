@@ -32,8 +32,6 @@ class FLGC(nn.Module):
         self.final_inference = False
 
 
-        self.debug_count = 0
-
     def forward(self, x):
         """
         :param x: shape(B, input_channel, H, W)
@@ -65,14 +63,11 @@ class FLGC(nn.Module):
             # t = torch.LongTensor([0, 1, 1, 2, 2])
             out = None
             debug_num_filter = 0
-            print("s t", s.shape, t.shape, torch.sum(t == 0).item(), torch.sum(t == 1).item(), torch.sum(s == 0).item(), torch.sum(s == 1).item())
-            print("t", t, t.shape, t_hat.shape)
             for i in range(self.group_num):
                 num_input  = torch.sum(s == i).item()
                 num_filter = torch.sum(t == i).item()
                 debug_num_filter += num_filter
                 if num_input*num_filter==0:
-                    print("num_input filter", num_input, num_filter)
                     continue
                 # print(i,"f num input, num filter", num_input, num_filter)
                 group_index = np.where(s.cpu()==i)[0]
@@ -83,14 +78,7 @@ class FLGC(nn.Module):
                     out = self.conv_test[i](x[:,index_new,:,:])
                 else:
                     out = torch.cat([out, self.conv_test[i](x[:,index_new,:,:])], 1)
-                print("out", out.shape)
-            # print("out", out.shape)
             out_new = torch.zeros_like(out)
-            # print("out new out", out_new.shape, out.shape)
-            print("debug_num_filter", debug_num_filter, x.shape, self.S.shape, self.T.shape)
-            print("out_new",out_new.shape, out.shape)
-            print("self.debug_count", self.debug_count, self.debug_list)
-            # print("self.out_index", self.output_index)
             for i, index in enumerate(self.output_index):
                 # print("i index", i, index)
                 out_new[:,index,:,:] = out[:,i,:,:]
@@ -99,7 +87,6 @@ class FLGC(nn.Module):
 
     def before_inference(self):
         self.final_inference = True
-        self.debug_count += 1
 
         s_hat = torch.softmax(self.S, dim=1)
         t_hat = torch.softmax(self.T, dim=1)
@@ -111,11 +98,9 @@ class FLGC(nn.Module):
         self.conv_test = nn.ModuleList()
         self.output_index = []
 
-        self.debug_list = []
         for i in range(self.group_num):
             num_input = torch.sum(s==i).item()
             num_filter = torch.sum(t==i).item()
-            self.debug_list.append(num_filter)
             # print(i,"num input, num filter", num_input, num_filter)
             if num_input*num_filter==0:
                 self.conv_test.append(None)
