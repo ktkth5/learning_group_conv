@@ -31,6 +31,9 @@ class FLGC(nn.Module):
 
         self.final_inference = False
 
+
+        self.debug_count = 0
+
     def forward(self, x):
         """
         :param x: shape(B, input_channel, H, W)
@@ -86,6 +89,7 @@ class FLGC(nn.Module):
             # print("out new out", out_new.shape, out.shape)
             print("debug_num_filter", debug_num_filter, x.shape, self.S.shape, self.T.shape)
             print("out_new",out_new.shape, out.shape)
+            print("self.debug_count", self.debug_count)
             # print("self.out_index", self.output_index)
             for i, index in enumerate(self.output_index):
                 # print("i index", i, index)
@@ -95,6 +99,7 @@ class FLGC(nn.Module):
 
     def before_inference(self):
         self.final_inference = True
+        self.debug_count += 1
 
         s_hat = torch.softmax(self.S, dim=1)
         t_hat = torch.softmax(self.T, dim=1)
