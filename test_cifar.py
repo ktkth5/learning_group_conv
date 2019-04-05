@@ -13,68 +13,6 @@ import model
 import utils
 
 
-class _test_cifar(nn.Module):
-
-    def __init__(self):
-        super(_test_cifar, self).__init__()
-        self.conv1 = nn.Conv2d(3,6,5)
-        self.pool = nn.MaxPool2d(2,2)
-        self.conv2 = nn.Conv2d(6,16,5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
-
-    def forward(self, x):
-        if self.training:
-            x = self.pool(F.relu(self.conv1(x)))
-            x = self.pool(F.relu(self.conv2(x)))
-            x = x.view(-1, 16 * 5 * 5)
-            x = F.relu(self.fc1(x))
-            x = F.relu(self.fc2(x))
-            x = self.fc3(x)
-        else:
-            x = self.pool(F.relu(self.conv1(x)))
-            x = self.pool(F.relu(self.conv2(x)))
-            x = x.view(-1, 16 * 5 * 5)
-            x = F.relu(self.fc1(x))
-            x = F.relu(self.fc2(x))
-            x = self.fc3(x)
-        return x
-
-class test_cifar(nn.Module):
-
-    def __init__(self):
-        super(test_cifar, self).__init__()
-        self.conv1 = FLGC(3,6,5,group_num=2)
-        self.pool = nn.MaxPool2d(2,2)
-        self.conv2 = FLGC(6,16,5,group_num=2)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
-
-    def forward(self, x):
-        if self.training:
-            x = self.pool(F.relu(self.conv1(x)))
-            x = self.pool(F.relu(self.conv2(x)))
-            x = x.view(-1, 16 * 5 * 5)
-            x = F.relu(self.fc1(x))
-            x = F.relu(self.fc2(x))
-            x = self.fc3(x)
-        else:
-            x = self.pool(F.relu(self.conv1(x)))
-            x = self.pool(F.relu(self.conv2(x)))
-            x = x.view(-1, 16 * 5 * 5)
-            x = F.relu(self.fc1(x))
-            x = F.relu(self.fc2(x))
-            x = self.fc3(x)
-        return x
-
-    def eval_set(self):
-        for module in self.children():
-            if isinstance(module, FLGC):
-                module.before_inference()
-
-
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     transform = transforms.Compose(
@@ -94,7 +32,6 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    net = test_cifar()
     # net = model.MobileNetV2(n_class=10)
     net = model.MobileNetV2_flgc(n_class=10)
     # net = loss_function.add_flgc_loss(net)
@@ -125,8 +62,8 @@ def main():
                 print(f"epoch[{epoch}:{i}/{len(trainloader)}] loss: {running_loss/100:.4f}")
                 running_loss = 0.0
 
-            # if i>500:
-            #     break
+            if i>50:
+                break
 
     print('Finished Training')
 
