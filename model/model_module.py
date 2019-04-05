@@ -37,6 +37,7 @@ class FLGC(nn.Module):
         self.time_cp0 = 0
         self.time_cp1 = 0
         self.time_cp2 = 0
+        self.time_cp3 = 0
 
     def forward(self, x):
         """
@@ -96,6 +97,7 @@ class FLGC(nn.Module):
             for i, index in enumerate(self.output_index):
                 # print("i index", i, index)
                 out_new[:,index,:,:] = out[:,i,:,:]
+            self.time_cp3 += time.time() - end
             print("TIME", self.time_cp0, self.time_cp1, self.time_cp2)
             return out_new
 
