@@ -62,10 +62,10 @@ class FLGC(nn.Module):
             # t = torch.LongTensor([0, 1, 1, 2, 2])
             out = None
             debug_num_filter = 0
-            print("s t", s.shape, t.shape, sum(t == 0).item(), sum(t == 1).item())
+            print("s t", s.shape, t.shape, sum(t == 0).item(), sum(t == 1).item(), sum(s == 0).item(), sum(s == 1).item())
             print("t", t)
             for i in range(self.group_num):
-                num_input = sum(s==i).item()
+                num_input  = sum(s == i).item()
                 num_filter = sum(t == i).item()
                 debug_num_filter += num_filter
                 if num_input*num_filter==0:
