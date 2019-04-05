@@ -66,7 +66,7 @@ class FLGC(nn.Module):
             out = None
             debug_num_filter = 0
             print("s t", s.shape, t.shape, sum(t == 0).item(), sum(t == 1).item(), sum(s == 0).item(), sum(s == 1).item())
-            print("t", t)
+            print("t", t, t.shape, t_hat.shape)
             for i in range(self.group_num):
                 num_input  = sum(s == i).item()
                 num_filter = sum(t == i).item()
