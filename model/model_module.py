@@ -4,6 +4,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
+import time
+
 class FLGC(nn.Module):
     """
     train()
@@ -31,6 +34,9 @@ class FLGC(nn.Module):
 
         self.final_inference = False
 
+        self.time_cp0 = 0
+        self.time_cp1 = 0
+        self.time_cp2 = 0
 
     def forward(self, x):
         """
@@ -54,6 +60,8 @@ class FLGC(nn.Module):
             return out
 
         else: # if not self.training
+            end = time.time()
+
             feature_index = [i for i in range(self.input_channel)]
             s_hat = torch.softmax(self.S, dim=1)
             t_hat = torch.softmax(self.T, dim=1)
@@ -63,6 +71,8 @@ class FLGC(nn.Module):
             # t = torch.LongTensor([0, 1, 1, 2, 2])
             out = None
             debug_num_filter = 0
+            self.time_cp0 += time.time() - end
+            end = time.time()
             for i in range(self.group_num):
                 num_input  = torch.sum(s == i).item()
                 num_filter = torch.sum(t == i).item()
@@ -74,14 +84,19 @@ class FLGC(nn.Module):
                 index_new = [feature_index.index(index) for index in group_index]
                 # print(i,"f input", x[:,index_new,:,:].shape)
                 # print(f"{i} x", x.shape)
+                self.time_cp1 += time.time() - end
+                end = time.time()
                 if out is None:
                     out = self.conv_test[i](x[:,index_new,:,:])
                 else:
                     out = torch.cat([out, self.conv_test[i](x[:,index_new,:,:])], 1)
+                self.time_cp2 += time.time() - end
+                end = time.time()
             out_new = torch.zeros_like(out)
             for i, index in enumerate(self.output_index):
                 # print("i index", i, index)
                 out_new[:,index,:,:] = out[:,i,:,:]
+            print("TIME", self.time_cp0, self.time_cp1, self.time_cp2)
             return out_new
 
 
