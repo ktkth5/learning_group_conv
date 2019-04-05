@@ -65,7 +65,7 @@ class FLGC(nn.Module):
                 if num_input*num_filter==0:
                     continue
                 # print(i,"f num input, num filter", num_input, num_filter)
-                group_index = np.where(s==i)[0]
+                group_index = np.where(s.cpu()==i)[0]
                 index_new = [feature_index.index(index) for index in group_index]
                 # print(i,"f input", x[:,index_new,:,:].shape)
                 # print(f"{i} x", x.shape)

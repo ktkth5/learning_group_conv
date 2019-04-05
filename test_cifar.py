@@ -62,7 +62,7 @@ def main():
                 print(f"epoch[{epoch}:{i}/{len(trainloader)}] loss: {running_loss/100:.4f}")
                 running_loss = 0.0
 
-            if i>500:
+            if i>300:
                 break
 
     print('Finished Training')
