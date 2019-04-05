@@ -98,7 +98,7 @@ class FLGC(nn.Module):
                 # print("i index", i, index)
                 out_new[:,index,:,:] = out[:,i,:,:]
             self.time_cp3 += time.time() - end
-            print("TIME", self.time_cp0, self.time_cp1, self.time_cp2)
+            print("TIME", self.time_cp0, self.time_cp1, self.time_cp2, self.time_cp3)
             return out_new
 
 
