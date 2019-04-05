@@ -104,7 +104,7 @@ class FLGC(nn.Module):
                 self.conv_test.append(None)
             else:
                 self.conv_test.append(nn.Conv2d(num_input,num_filter,kernel_size=self.kernel_size,
-                                                stride=self.stride,padding=self.padding).to(device))
+                                                stride=self.stride,padding=self.padding).to(self.device))
             self.output_index += list(np.where(t.cpu()==i)[0])
         return self.output_index
 
