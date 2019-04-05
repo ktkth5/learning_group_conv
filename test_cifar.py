@@ -40,7 +40,7 @@ def main():
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
-    epochs = 1
+    epochs = 20
     for epoch in range(epochs):
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(trainloader, 0):
@@ -58,12 +58,12 @@ def main():
 
             # print statistics
             running_loss += loss.item()
-            if i % 100 == 0:
-                print(f"epoch[{epoch}:{i}/{len(trainloader)}] loss: {running_loss/100:.4f}")
+            if i % 200 == 0:
+                print(f"epoch[{epoch}:{i}/{len(trainloader)}] loss: {running_loss/200:.4f}")
                 running_loss = 0.0
 
-            if i>300:
-                break
+            # if i>300:
+            #     break
 
     print('Finished Training')
 
