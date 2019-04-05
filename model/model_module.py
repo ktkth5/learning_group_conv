@@ -89,7 +89,7 @@ class FLGC(nn.Module):
             # print("out new out", out_new.shape, out.shape)
             print("debug_num_filter", debug_num_filter, x.shape, self.S.shape, self.T.shape)
             print("out_new",out_new.shape, out.shape)
-            print("self.debug_count", self.debug_count)
+            print("self.debug_count", self.debug_count, self.debug_list)
             # print("self.out_index", self.output_index)
             for i, index in enumerate(self.output_index):
                 # print("i index", i, index)
@@ -110,9 +110,12 @@ class FLGC(nn.Module):
         # print("S & T",s,t)
         self.conv_test = nn.ModuleList()
         self.output_index = []
+
+        self.debug_list = []
         for i in range(self.group_num):
             num_input = sum(s==i).item()
-            num_filter = sum(t==i).item()
+            num_filter = sum(t==i).item(
+            self.debug_list.append(num_filter)
             # print(i,"num input, num filter", num_input, num_filter)
             if num_input*num_filter==0:
                 self.conv_test.append(None)
