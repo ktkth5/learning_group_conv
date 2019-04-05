@@ -157,6 +157,9 @@ def main():
 if __name__=="__main__":
     main()
 
+    # a = np.array([0,1,2,3,4,0,1,2,3,4])
+    # print(np.where(a==0))
+
     # for debug
     # net = model.MobileNetV2_flgc(n_class=10)
     # net = loss_function.add_flgc_loss(net)

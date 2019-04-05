@@ -78,6 +78,8 @@ class FLGC(nn.Module):
             # print("out", out.shape)
             out_new = torch.zeros_like(out)
             # print("out new out", out_new.shape, out.shape)
+            print("out_new",out_new.shape)
+            print("self.out_index", self.output_index)
             for i, index in enumerate(self.output_index):
                 # print("i index", i, index)
                 out_new[:,index,:,:] = out[:,i,:,:]
