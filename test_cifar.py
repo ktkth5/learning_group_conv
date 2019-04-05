@@ -156,3 +156,9 @@ def main():
 
 if __name__=="__main__":
     main()
+
+    # for debug
+    # net = model.MobileNetV2_flgc(n_class=10)
+    # net = loss_function.add_flgc_loss(net)
+    # net = model.model_module.add_eval_set(net)
+    # net.eval_set()

@@ -34,7 +34,7 @@ class FLGC(nn.Module):
         :param x: shape(B, input_channel, H, W)
         :return: shape(B, output_channel, H, W)
         """
-        print("self.final_inference", self.final_inference)
+        # print("self.final_inference", self.final_inference)
         if not self.final_inference: # if self.training
             B, _, H, W = x.size()
             s_hat = torch.softmax(self.S, dim=1)
@@ -97,7 +97,7 @@ class FLGC(nn.Module):
         for i in range(self.group_num):
             num_input = sum(s==i).item()
             num_filter = sum(t==i).item()
-            print(i,"num input, num filter", num_input, num_filter)
+            # print(i,"num input, num filter", num_input, num_filter)
             if num_input*num_filter==0:
                 self.conv_test.append(None)
             else:
@@ -107,15 +107,29 @@ class FLGC(nn.Module):
         return self.output_index
 
 
+# def cycle_check(seq):
+#     for module in seq.children():
+#         if isinstance()
+
+def apply_module(self):
+    if isinstance(self, FLGC):
+        self.before_inference()
 
 def eval_set(self):
-    for module in self.children():
-        if isinstance(module, FLGC):
-            module.before_inference()
-        if isinstance(module, nn.Sequential):
-            for module_seq in module.children():
-                if isinstance(module_seq, FLGC):
-                    module_seq.before_inference()
+    self.apply(apply_module)
+    # for module in self.children():
+    #     # print("module", module, "\n")
+    #     if isinstance(module, FLGC):
+    #         print("module FLGC", module)
+    #         module.before_inference()
+    #     if isinstance(module, nn.Sequential):
+    #         eval_set(module)
+            # for module_seq in module.children():
+            #     # print("module seq", module_seq)
+            #     if isinstance(module_seq, FLGC):
+            #         print("module_seq FLGC", module_seq)
+            #         module_seq.before_inference()
+
 
 def add_eval_set(net_main_module):
     net_main_module.eval_set = eval_set.__get__(net_main_module)
