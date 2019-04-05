@@ -27,6 +27,8 @@ class FLGC(nn.Module):
         self.dilation = dilation
         self.group_num = group_num
 
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.final_inference = False
 
     def forward(self, x):
@@ -102,7 +104,7 @@ class FLGC(nn.Module):
                 self.conv_test.append(None)
             else:
                 self.conv_test.append(nn.Conv2d(num_input,num_filter,kernel_size=self.kernel_size,
-                                                stride=self.stride,padding=self.padding))
+                                                stride=self.stride,padding=self.padding).to(device))
             self.output_index += list(np.where(t.cpu()==i)[0])
         return self.output_index
 
