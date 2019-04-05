@@ -114,7 +114,7 @@ class FLGC(nn.Module):
         self.debug_list = []
         for i in range(self.group_num):
             num_input = sum(s==i).item()
-            num_filter = sum(t==i).item(
+            num_filter = sum(t==i).item()
             self.debug_list.append(num_filter)
             # print(i,"num input, num filter", num_input, num_filter)
             if num_input*num_filter==0:
