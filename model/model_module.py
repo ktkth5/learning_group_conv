@@ -65,6 +65,7 @@ class FLGC(nn.Module):
                 num_input = sum(s==i).item()
                 num_filter = sum(t == i).item()
                 if num_input*num_filter==0:
+                    print("num_input filter", num_input, num_filter)
                     continue
                 # print(i,"f num input, num filter", num_input, num_filter)
                 group_index = np.where(s.cpu()==i)[0]
