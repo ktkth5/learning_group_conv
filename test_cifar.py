@@ -32,10 +32,10 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    net = model.MobileNetV2(n_class=10)
-    # net = model.MobileNetV2_flgc(n_class=10)
-    # net = loss_function.add_flgc_loss(net)
-    # net = model.model_module.add_eval_set(net)
+    # net = model.MobileNetV2(n_class=10)
+    net = model.MobileNetV2_flgc(n_class=10)
+    net = loss_function.add_flgc_loss(net)
+    net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -60,76 +60,11 @@ def main():
 
     print('Finished Training')
 
-    # final_val_acc, class_correct, class_total = final_validation(net, testloader)
-    # for i in range(10):
-    #     print('Accuracy of %5s : %2d %%' % (
-    #           classes[i], 100 * class_correct[i] / class_total[i]))
-    # print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
-
-    # correct = 0
-    # total = 0
-    #
-    # import time
-    #
-    # net.eval()
-    # with torch.no_grad():
-    #     start = time.time()
-    #     for (images, labels) in testloader:
-    #         images = images.to(device)
-    #         labels = labels.to(device)
-    #         outputs = net(images)
-    #         _, predicted = torch.max(outputs.data, 1)
-    #         total += labels.size(0)
-    #         correct += (predicted == labels).sum().cpu().item()
-    # print('Accuracy: {:.2f} %%'.format(100 * float(correct/total)), f"Time: {time.time()-start:.2f}")
-
-    # class_correct = list(0. for i in range(10))
-    # class_total = list(0. for i in range(10))
-    # with torch.no_grad():
-    #     for data in testloader:
-    #         images, labels = data
-    #         outputs = net(images)
-    #         _, predicted = torch.max(outputs, 1)
-    #         c = (predicted == labels).squeeze()
-    #         for i in range(4):
-    #             label = labels[i]
-    #             class_correct[label] += c[i].item()
-    #             class_total[label] += 1
-    #
-    # for i in range(10):
-    #     print('Accuracy of %5s : %2d %%' % (
-    #         classes[i], 100 * class_correct[i] / class_total[i]))
-
-
-    # net.eval_set()
-    # with torch.no_grad():
-    #     start = time.time()
-    #     for (images, labels) in testloader:
-    #         images = images.to(device)
-    #         labels = labels.to(device)
-    #         outputs = net(images)
-    #         _, predicted = torch.max(outputs.data, 1)
-    #         total += labels.size(0)
-    #         correct += (predicted == labels).sum().cpu().item()
-    # print('Accuracy: {:.2f} %%'.format(100 * float(correct/total)), f"Time: {time.time()-start:.2f}")
-
-    # class_correct = list(0. for i in range(10))
-    # class_total = list(0. for i in range(10))
-    # with torch.no_grad():
-    #     for data in testloader:
-    #         images, labels = data
-    #         outputs = net(images)
-    #         _, predicted = torch.max(outputs, 1)
-    #         c = (predicted == labels).squeeze()
-    #         for i in range(4):
-    #             label = labels[i]
-    #             class_correct[label] += c[i].item()
-    #             class_total[label] += 1
-    #
-    #
-    # for i in range(10):
-    #     print('Accuracy of %5s : %2d %%' % (
-    #         classes[i], 100 * class_correct[i] / class_total[i]))
+    final_val_acc, class_correct, class_total = final_validation(net, testloader)
+    for i in range(10):
+        print('Accuracy of %5s : %2d %%' % (
+              classes[i], 100 * class_correct[i] / class_total[i]))
+    print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
 
     # if calc flop
