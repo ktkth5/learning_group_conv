@@ -42,7 +42,7 @@ def main():
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10], gamma=0.1)
 
     print("Start Training")
-    epochs = 10
+    epochs = 1
     for epoch in range(epochs):
         scheduler.step()
         train_loss = train(net, trainloader, criterion, optimizer, epoch)
