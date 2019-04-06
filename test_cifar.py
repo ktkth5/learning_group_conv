@@ -42,7 +42,7 @@ def main():
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10], gamma=0.1)
 
     print("Start Training")
-    epochs = 5
+    epochs = 1
     for epoch in range(epochs):
         scheduler.step()
         train_loss = train(net, trainloader, criterion, optimizer, epoch)
@@ -192,7 +192,7 @@ def validation(model, val_loader, criterion, epoch):
             total += labels.size(0)
             correct += (predicted == labels).sum().cpu().item()
             c = (predicted == labels).squeeze()
-            for i in range(4):
+            for i in range(len(labels)):
                 label = labels[i]
                 class_correct[label] += c[i].item()
                 class_total[label] += 1
@@ -218,7 +218,7 @@ def final_validation(model, val_loader):
             total += labels.size(0)
             correct += (predicted == labels).sum().cpu().item()
             c = (predicted == labels).squeeze()
-            for i in range(4):
+            for i in range(len(labels)):
                 label = labels[i]
                 class_correct[label] += c[i].item()
                 class_total[label] += 1
@@ -259,4 +259,7 @@ if __name__=="__main__":
     # n = np.arange(480).reshape((5, 4, 4, 6))
     # a = torch.from_numpy(n)
     # perm = torch.LongTensor([0, 2, 1, 3])
-    # print(a[:, perm])
+    # print(a[:, perm][:,perm]==a)
+
+    # a = nn.Conv2d(1,3,kernel_size=2)
+    # a.weight.data = torch.zeros(3,1,2,2)
