@@ -13,6 +13,8 @@ import loss_function
 import model
 import utils
 
+from tqdm import tqdm
+
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -110,7 +112,7 @@ def train(model, train_loader, criterion, optimizer, epoch):
     model.train()
 
     end = time.time()
-    for i, (inputs, labels) in enumerate(train_loader, 0):
+    for i, (inputs, labels) in enumerate(tqdm(train_loader, 0)):
 
         inputs = inputs.to(device)
         labels = labels.to(device)
@@ -142,7 +144,7 @@ def validation(model, val_loader, criterion, epoch):
     model.eval()
     with torch.no_grad():
         start = time.time()
-        for (images, labels) in val_loader:
+        for (images, labels) in tqdm(val_loader):
             images = images.to(device)
             labels = labels.to(device)
             outputs = model(images)
@@ -168,7 +170,7 @@ def final_validation(model, val_loader):
     model.eval_set()
     with torch.no_grad():
         start = time.time()
-        for (images, labels) in val_loader:
+        for (images, labels) in tqdm(val_loader):
             images = images.to(device)
             labels = labels.to(device)
             outputs = model(images)

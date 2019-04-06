@@ -77,16 +77,9 @@ class FLGC(nn.Module):
                     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
                 else:
                     out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
-                # print(x_index,f_index)
-                # print("ti", ti[0,:].view(-1))
-                # print("out",out[:,:,0])
             range_index = [i for i in range(out.shape[1])]
             out_index = [list(out_index.cpu()).index(i) for i in range_index]
             out = out[:, out_index]
-            # print("out_index\n", out_index)
-            # print("f out", out[:,:,0])
-
-
             return out
 
         else: # if not self.training
@@ -104,7 +97,6 @@ class FLGC(nn.Module):
                     out = self.conv_test[i](xi)
                 else:
                     out = torch.cat([out, self.conv_test[i](xi)], 1)
-                # print("out", out[:,:,0])
                 self.time_cp2 += time.time() - end
                 end = time.time()
 
