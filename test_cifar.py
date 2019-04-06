@@ -56,7 +56,10 @@ def main():
 
     print('Finished Training')
 
-    final_val_acc = final_validation(net, testloader)
+    final_val_acc, class_correct, class_total = final_validation(net, testloader)
+    for i in range(10):
+        print('Accuracy of %5s : %2d %%' % (
+              classes[i], 100 * class_correct[i] / class_total[i]))
     print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
     # correct = 0
@@ -175,6 +178,8 @@ def validation(model, val_loader, criterion, epoch):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     correct = 0
     total = 0
+    class_correct = list(0. for i in range(10))
+    class_total = list(0. for i in range(10))
 
     model.eval()
     with torch.no_grad():
@@ -186,6 +191,11 @@ def validation(model, val_loader, criterion, epoch):
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().cpu().item()
+            c = (predicted == labels).squeeze()
+            for i in range(4):
+                label = labels[i]
+                class_correct[label] += c[i].item()
+                class_total[label] += 1
     # print('Accuracy: {:.2f} %%'.format(100 * float(correct / total)), f"Time: {time.time()-start:.2f}")
     return 100 * float(correct / total)
 
@@ -194,6 +204,9 @@ def final_validation(model, val_loader):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     correct = 0
     total = 0
+    class_correct = list(0. for i in range(10))
+    class_total = list(0. for i in range(10))
+
     model.eval_set()
     with torch.no_grad():
         start = time.time()
@@ -204,8 +217,14 @@ def final_validation(model, val_loader):
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().cpu().item()
+            c = (predicted == labels).squeeze()
+            for i in range(4):
+                label = labels[i]
+                class_correct[label] += c[i].item()
+                class_total[label] += 1
     # print('Accuracy: {:.2f} %%'.format(100 * float(correct / total)), f"Time: {time.time()-start:.2f}")
-    return 100 * float(correct / total)
+
+    return 100 * float(correct / total), class_correct, class_total
 
 
 class AverageMeter(object):
