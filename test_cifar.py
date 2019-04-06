@@ -245,7 +245,7 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 if __name__=="__main__":
-    # main()
+    main()
 
     # a = np.array([0,1,2,3,4,0,1,2,3,4])
     # print(np.where(a==0))
@@ -256,13 +256,13 @@ if __name__=="__main__":
     # net = model.model_module.add_eval_set(net)
     # net.eval_set()
 
-    n = np.arange(480).reshape((5, 4, 4, 6))
-    a = torch.from_numpy(n)
-    perm = torch.LongTensor([0, 2, 1, 3])
-    print(a[[0,1,2]][:,[0,1]].shape)
-    print(a[[1,2,0]].shape)
-    print(a[:,[0,1,2]].shape)
-    print(a[:,[1,2,0]].shape)
+    # n = np.arange(480).reshape((5, 4, 4, 6))
+    # a = torch.from_numpy(n)
+    # perm = torch.LongTensor([0, 2, 1, 3])
+    # print(a[[0,1,2]][:,[0,1]].shape)
+    # print(a[[1,2,0]].shape)
+    # print(a[:,[0,1,2]].shape)
+    # print(a[:,[1,2,0]].shape)
 
     # print(a[:, perm][:,perm])
 
