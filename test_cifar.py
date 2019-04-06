@@ -1,4 +1,4 @@
-
+import time
 import numpy as np
 import torch
 import torch.nn as nn
@@ -40,51 +40,39 @@ def main():
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
 
+    print("Start Training")
     epochs = 100
     for epoch in range(epochs):
-        running_loss = 0.0
-        for i, (inputs, labels) in enumerate(trainloader, 0):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
-
-            # zero the parameter gradients
-            optimizer.zero_grad()
-
-            # forward + backward + optimize
-            outputs = net(inputs)
-            loss = criterion(outputs, labels) #+ net.flgc_loss()
-            loss.backward()
-            optimizer.step()
-
-            # print statistics
-            running_loss += loss.item()
-            if i % 200 == 0:
-                print(f"epoch[{epoch}:{i}/{len(trainloader)}] loss: {running_loss/200:.4f}")
-                running_loss = 0.0
+        train_loss = train(net, trainloader, criterion, optimizer, epoch)
+        val_acc = validation(net, testloader, criterion, epoch)
+        print(f"Epoch: [{epoch}/{epochs}]"
+              f"Train Loss: {train_loss:.4f}\t"
+              f"Val Acc: {val_acc:.2f} %%")
 
             # if i>300:
             #     break
 
     print('Finished Training')
 
+    final_val_acc = final_validation(net, testloader, epoch)
+    print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
-
-    correct = 0
-    total = 0
-
-    import time
-
-    net.eval()
-    with torch.no_grad():
-        start = time.time()
-        for (images, labels) in testloader:
-            images = images.to(device)
-            labels = labels.to(device)
-            outputs = net(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().cpu().item()
-    print('Accuracy: {:.2f} %%'.format(100 * float(correct/total)), f"Time: {time.time()-start:.2f}")
+    # correct = 0
+    # total = 0
+    #
+    # import time
+    #
+    # net.eval()
+    # with torch.no_grad():
+    #     start = time.time()
+    #     for (images, labels) in testloader:
+    #         images = images.to(device)
+    #         labels = labels.to(device)
+    #         outputs = net(images)
+    #         _, predicted = torch.max(outputs.data, 1)
+    #         total += labels.size(0)
+    #         correct += (predicted == labels).sum().cpu().item()
+    # print('Accuracy: {:.2f} %%'.format(100 * float(correct/total)), f"Time: {time.time()-start:.2f}")
 
     # class_correct = list(0. for i in range(10))
     # class_total = list(0. for i in range(10))
@@ -104,17 +92,17 @@ def main():
     #         classes[i], 100 * class_correct[i] / class_total[i]))
 
 
-    net.eval_set()
-    with torch.no_grad():
-        start = time.time()
-        for (images, labels) in testloader:
-            images = images.to(device)
-            labels = labels.to(device)
-            outputs = net(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().cpu().item()
-    print('Accuracy: {:.2f} %%'.format(100 * float(correct/total)), f"Time: {time.time()-start:.2f}")
+    # net.eval_set()
+    # with torch.no_grad():
+    #     start = time.time()
+    #     for (images, labels) in testloader:
+    #         images = images.to(device)
+    #         labels = labels.to(device)
+    #         outputs = net(images)
+    #         _, predicted = torch.max(outputs.data, 1)
+    #         total += labels.size(0)
+    #         correct += (predicted == labels).sum().cpu().item()
+    # print('Accuracy: {:.2f} %%'.format(100 * float(correct/total)), f"Time: {time.time()-start:.2f}")
 
     # class_correct = list(0. for i in range(10))
     # class_total = list(0. for i in range(10))
@@ -153,6 +141,87 @@ def main():
     #     batch = torch.FloatTensor(bs, 3, img_size, img_size)
     #     _ = m(batch)
     #     print("flgc conv   :", f"img size: {img_size} flops: {m.compute_average_flops_cost() / 1e9 / 2}")
+
+
+def train(model, train_loader, criterion, optimizer, epoch):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    running_loss = 0.0
+    loss_avg = AverageMeter()
+    model.train()
+    for i, (inputs, labels) in enumerate(train_loader, 0):
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        # zero the parameter gradients
+        optimizer.zero_grad()
+
+        # forward + backward + optimize
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)  # + net.flgc_loss()
+        loss.backward()
+        optimizer.step()
+
+        # print statistics
+        running_loss += loss.item()
+        loss_avg.update(loss.item(), inputs.size(0))
+        # if i % 200 == 0:
+        #     print(f"epoch[{epoch}:{i}/{len(train_loader)}] loss: {running_loss/200:.4f}")
+        #     running_loss = 0.0
+    return loss_avg.avg
+
+def validation(model, val_loader, criterion, epoch):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    correct = 0
+    total = 0
+
+    model.eval()
+    with torch.no_grad():
+        start = time.time()
+        for (images, labels) in val_loader:
+            images = images.to(device)
+            labels = labels.to(device)
+            outputs = model(images)
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().cpu().item()
+    # print('Accuracy: {:.2f} %%'.format(100 * float(correct / total)), f"Time: {time.time()-start:.2f}")
+    return 100 * float(correct / total)
+
+
+def final_validation(model, val_loader, epoch):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    correct = 0
+    total = 0
+    model.eval_set()
+    with torch.no_grad():
+        start = time.time()
+        for (images, labels) in val_loader:
+            images = images.to(device)
+            labels = labels.to(device)
+            outputs = model(images)
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().cpu().item()
+    # print('Accuracy: {:.2f} %%'.format(100 * float(correct / total)), f"Time: {time.time()-start:.2f}")
+    return 100 * float(correct / total)
+
+
+class AverageMeter(object):
+    """Computes and stores the average and current value"""
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
 
 if __name__=="__main__":
     main()
