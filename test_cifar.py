@@ -211,7 +211,20 @@ def save_checkpoint(state, is_best, filename, best_filename):
 
 
 if __name__=="__main__":
-    main()
+    # main()
+
+    a = [i for i in range(100)]
+
+    end = time.time()
+    for i in range(10000):
+        a.index(1)
+    print(time.time()-end)
+
+    a = torch.Tensor(a).long()
+    end = time.time()
+    for i in range(10000):
+        (a==1).nonzero()
+    print(time.time()-end)
 
     # a = np.array([0,1,2,3,4,0,1,2,3,4])
     # print(np.where(a==0))
