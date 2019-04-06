@@ -53,7 +53,7 @@ class FLGC(nn.Module):
             t = torch.argmax(t_hat, dim=1)
 
             out = torch.Tensor()
-            out_index = torch.tensor([]).long()
+            out_index = torch.tensor([]).long().to(self.device)
             for i in range(self.group_num):
                 # Previous Method
                 # xi = x * s_hat[:,i].view(1,-1,1,1).expand(B,self.input_channel,H,W)
