@@ -101,6 +101,7 @@ class FLGC(nn.Module):
                 # out_new[:,index,:,:] = out[:,i,:,:]
             self.time_cp3 += time.time() - end
             # print("TIME", self.time_cp0, self.time_cp1, self.time_cp2, self.time_cp3)
+            print("S T", s_hat.mean(dim=0).view(-1), t_hat.mean(dim=0).view(-1))
             return out_new
 
 
