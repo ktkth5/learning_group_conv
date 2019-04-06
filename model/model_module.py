@@ -15,7 +15,7 @@ class FLGC(nn.Module):
     """
 
     def __init__(self, input_channel,output_channel,kernel_size,stride=1,padding=0,
-                 dilation=1,group_num=1):
+                 dilation=1,group_num=1, bias=False):
         super(FLGC, self).__init__()
 
         self.conv = nn.Parameter(torch.randn(output_channel, input_channel, kernel_size, kernel_size))
@@ -74,7 +74,7 @@ class FLGC(nn.Module):
                     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
                 else:
                     out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
-                print("out",out.shape)
+                # print("out",out.shape)
             out = out[:, out_index]
 
 

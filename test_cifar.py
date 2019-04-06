@@ -16,31 +16,44 @@ import utils
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    transform = transforms.Compose(
-        [transforms.ToTensor(),
-         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+
+    transform_train = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
+
+    transform_test = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
+
+    # transform = transforms.Compose(
+    #     [transforms.ToTensor(),
+    #      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                            download=True, transform=transform)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=256,
+                                            download=True, transform=transform_train)
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=80,
                                               shuffle=True, num_workers=2,drop_last=True)
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                           download=True, transform=transform)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=256*2,
+                                           download=True, transform=transform_test)
+    testloader = torch.utils.data.DataLoader(testset, batch_size=80*2,
                                              shuffle=False, num_workers=2,drop_last=False)
 
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
     # net = model.MobileNetV2(n_class=10)
-    net = model.MobileNetV2_flgc(n_class=10)
+    net = model.MobileNetV2_flgc()
     net = loss_function.add_flgc_loss(net)
     net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
-    optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
+    optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.1)
 
     print("Start Training")
