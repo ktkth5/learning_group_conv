@@ -211,7 +211,7 @@ def save_checkpoint(state, is_best, filename, best_filename):
 
 
 if __name__=="__main__":
-    # main()
+    main()
 
     a = [i for i in range(100)]
 
