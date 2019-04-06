@@ -27,6 +27,7 @@ class InvertedResidual(nn.Module):
         hidden_dim = round(inp * expand_ratio)
         self.use_res_connect = self.stride == 1 and inp == oup
 
+        GROUPS = 2
         if expand_ratio == 1:
             self.conv = nn.Sequential(
                 # dw
@@ -34,13 +35,13 @@ class InvertedResidual(nn.Module):
                 nn.BatchNorm2d(hidden_dim),
                 nn.ReLU6(inplace=True),
                 # pw-linear
-                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
+                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False, groups=GROUPS),
                 nn.BatchNorm2d(oup),
             )
         else:
             self.conv = nn.Sequential(
                 # pw
-                nn.Conv2d(inp, hidden_dim, 1, 1, 0, bias=False),
+                nn.Conv2d(inp, hidden_dim, 1, 1, 0, bias=False, groups=GROUPS),
                 nn.BatchNorm2d(hidden_dim),
                 nn.ReLU6(inplace=True),
                 # dw
@@ -48,7 +49,7 @@ class InvertedResidual(nn.Module):
                 nn.BatchNorm2d(hidden_dim),
                 nn.ReLU6(inplace=True),
                 # pw-linear
-                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
+                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False, groups=GROUPS),
                 nn.BatchNorm2d(oup),
             )
 

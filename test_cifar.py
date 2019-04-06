@@ -32,10 +32,10 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    # net = model.MobileNetV2(n_class=10)
-    net = model.MobileNetV2_flgc(n_class=10)
-    net = loss_function.add_flgc_loss(net)
-    net = model.model_module.add_eval_set(net)
+    net = model.MobileNetV2(n_class=10)
+    # net = model.MobileNetV2_flgc(n_class=10)
+    # net = loss_function.add_flgc_loss(net)
+    # net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -44,13 +44,16 @@ def main():
 
     print("Start Training")
     epochs = 10
+    end = time.time()
     for epoch in range(epochs):
         scheduler.step()
         train_loss = train(net, trainloader, criterion, optimizer, epoch)
         val_acc = validation(net, testloader, criterion, epoch)
         print(f"Epoch: [{epoch}/{epochs}]"
               f"Train Loss: {train_loss:.4f}\t"
-              f"Val Acc: {val_acc:.2f} %%")
+              f"Val Acc: {val_acc:.2f} %%\t"
+              f"Time: {time.time()-end:.4f}")
+        end = time.time()
 
             # if i>300:
             #     break
@@ -154,7 +157,10 @@ def train(model, train_loader, criterion, optimizer, epoch):
     running_loss = 0.0
     loss_avg = AverageMeter()
     model.train()
+
+    end = time.time()
     for i, (inputs, labels) in enumerate(train_loader, 0):
+
         inputs = inputs.to(device)
         labels = labels.to(device)
 
