@@ -1,4 +1,5 @@
 import time
+import shutil
 import numpy as np
 import torch
 import torch.nn as nn
@@ -32,10 +33,10 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    # net = model.MobileNetV2(n_class=10)
-    net = model.MobileNetV2_flgc(n_class=10)
-    net = loss_function.add_flgc_loss(net)
-    net = model.model_module.add_eval_set(net)
+    net = model.MobileNetV2(n_class=10)
+    # net = model.MobileNetV2_flgc(n_class=10)
+    # net = loss_function.add_flgc_loss(net)
+    # net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -58,6 +59,8 @@ def main():
             # if i>300:
             #     break
 
+
+    save_checkpoint({"state_dict"},False,"cp.pth.tar","bcp.pth.tar")
     print('Finished Training')
 
     final_val_acc, class_correct, class_total = final_validation(net, testloader)
@@ -185,6 +188,12 @@ class AverageMeter(object):
         self.sum += val * n
         self.count += n
         self.avg = self.sum / self.count
+
+def save_checkpoint(state, is_best, filename, best_filename):
+    torch.save(state, filename)
+    if is_best:
+        shutil.copyfile(filename, best_filename)
+
 
 if __name__=="__main__":
     main()
