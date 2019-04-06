@@ -49,15 +49,30 @@ class FLGC(nn.Module):
             B, _, H, W = x.size()
             s_hat = torch.softmax(self.S, dim=1)
             t_hat = torch.softmax(self.T, dim=1)
+            s = torch.argmax(s_hat, dim=1)
+            t = torch.argmax(t_hat, dim=1)
 
             out = torch.Tensor()
             for i in range(self.group_num):
-                xi = x * s_hat[:,i].view(1,-1,1,1).expand(B,self.input_channel,H,W)
-                ti = self.conv * t_hat[:,i].view(-1,1,1,1).expand(self.output_channel,self.input_channel,1,1)
+                # Previous Method
+                # xi = x * s_hat[:,i].view(1,-1,1,1).expand(B,self.input_channel,H,W)
+                # ti = self.conv * t_hat[:,i].view(-1,1,1,1).expand(self.output_channel,self.input_channel,1,1)
+                # if i==0:
+                #     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
+                # else:
+                #     out += F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
+
+                # New Method
+                x_index = list(np.where(s.cpu() == i)[0])
+                f_index = list(np.where(t.cpu() == i)[0])
+                xi = x[:, x_index] * s_hat[x_index, i].view(1,-1,1,1).expand(B, len(x_index),H,W)
+                ti = self.conv[f_index][:, x_index] * t_hat[:, f_index].view(-1,1,1,1).expand(len(f_index),len(x_index),1,1)
                 if i==0:
                     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
                 else:
                     out += F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
+
+
             return out
 
         else: # if not self.training
