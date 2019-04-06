@@ -32,17 +32,18 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    # net = model.MobileNetV2(n_class=10)
-    net = model.MobileNetV2_flgc(n_class=10)
+    net = model.MobileNetV2(n_class=10)
+    # net = model.MobileNetV2_flgc(n_class=10)
     # net = loss_function.add_flgc_loss(net)
-    net = model.model_module.add_eval_set(net)
+    # net = model.model_module.add_eval_set(net)
+
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10], gamma=0.1)
 
     print("Start Training")
-    epochs = 100
+    epochs = 10
     for epoch in range(epochs):
         scheduler.step()
         train_loss = train(net, trainloader, criterion, optimizer, epoch)
@@ -56,11 +57,11 @@ def main():
 
     print('Finished Training')
 
-    final_val_acc, class_correct, class_total = final_validation(net, testloader)
-    for i in range(10):
-        print('Accuracy of %5s : %2d %%' % (
-              classes[i], 100 * class_correct[i] / class_total[i]))
-    print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
+    # final_val_acc, class_correct, class_total = final_validation(net, testloader)
+    # for i in range(10):
+    #     print('Accuracy of %5s : %2d %%' % (
+    #           classes[i], 100 * class_correct[i] / class_total[i]))
+    # print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
     # correct = 0
     # total = 0
