@@ -57,7 +57,7 @@ def main():
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.1)
 
     print("Start Training")
-    epochs = 5
+    epochs = 1
     end = time.time()
     for epoch in range(epochs):
         scheduler.step()
