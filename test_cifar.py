@@ -41,10 +41,10 @@ def main():
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100], gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.1)
 
     print("Start Training")
-    epochs = 10
+    epochs = 500
     end = time.time()
     for epoch in range(epochs):
         scheduler.step()
@@ -63,11 +63,11 @@ def main():
     save_checkpoint({"state_dict"},False,"cp.pth.tar","bcp.pth.tar")
     print('Finished Training')
 
-    final_val_acc, class_correct, class_total = final_validation(net, testloader)
-    for i in range(10):
-        print('Accuracy of %5s : %2d %%' % (
-              classes[i], 100 * class_correct[i] / class_total[i]))
-    print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
+    # final_val_acc, class_correct, class_total = final_validation(net, testloader)
+    # for i in range(10):
+    #     print('Accuracy of %5s : %2d %%' % (
+    #           classes[i], 100 * class_correct[i] / class_total[i]))
+    # print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
 
     # if calc flop
