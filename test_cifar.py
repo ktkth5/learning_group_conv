@@ -76,11 +76,11 @@ def main():
     # save_checkpoint({"state_dict"},False,"cp.pth.tar","bcp.pth.tar")
     print('Finished Training')
 
-    # final_val_acc, class_correct, class_total = final_validation(net, testloader)
+    final_val_acc, class_correct, class_total = final_validation(net, testloader)
     # for i in range(10):
     #     print('Accuracy of %5s : %2d %%' % (
     #           classes[i], 100 * class_correct[i] / class_total[i]))
-    # print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
+    print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
 
     # if calc flop
