@@ -65,8 +65,8 @@ class FLGC(nn.Module):
                 #     out += F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
 
                 # New Method
-                x_index = (s==i).nonzero().view(-1)
-                f_index = (t==i).nonzero().view(-1)
+                x_index = (s==i).nonzero().squeeze(-1)
+                f_index = (t==i).nonzero().squeeze(-1)
                 # print("x_index f_index", x_index.shape, f_index.shape)
                 # out_index += f_index
                 out_index = torch.cat([out_index, f_index],0)
@@ -77,8 +77,8 @@ class FLGC(nn.Module):
                     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
                 else:
                     out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
-            range_index = [i for i in range(out.shape[1])]
-            out_index = [list(out_index.cpu()).index(i) for i in range_index]
+            # range_index = [i for i in range(out.shape[1])]
+            # out_index = [list(out_index.cpu()).index(i) for i in range_index]
             out = out[:, out_index]
             return out
 
