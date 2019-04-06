@@ -33,10 +33,10 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    net = model.MobileNetV2(n_class=10)
-    # net = model.MobileNetV2_flgc(n_class=10)
-    # net = loss_function.add_flgc_loss(net)
-    # net = model.model_module.add_eval_set(net)
+    # net = model.MobileNetV2(n_class=10)
+    net = model.MobileNetV2_flgc(n_class=10)
+    net = loss_function.add_flgc_loss(net)
+    net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -44,7 +44,7 @@ def main():
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.1)
 
     print("Start Training")
-    epochs = 500
+    epochs = 5
     end = time.time()
     for epoch in range(epochs):
         scheduler.step()
@@ -60,7 +60,7 @@ def main():
             #     break
 
 
-    save_checkpoint({"state_dict"},False,"cp.pth.tar","bcp.pth.tar")
+    # save_checkpoint({"state_dict"},False,"cp.pth.tar","bcp.pth.tar")
     print('Finished Training')
 
     # final_val_acc, class_correct, class_total = final_validation(net, testloader)

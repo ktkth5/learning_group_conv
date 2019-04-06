@@ -26,12 +26,13 @@ class InvertedResidual(nn.Module):
         self.stride = stride
         assert stride in [1, 2]
 
+        group_num = 1
         hidden_dim = round(inp * expand_ratio)
         self.use_res_connect = self.stride == 1 and inp == oup
 
         if expand_ratio == 1:
             if oup>=96:
-                last_conv = FLGC(hidden_dim, oup, 1, stride=1, padding=0, group_num=2)
+                last_conv = FLGC(hidden_dim, oup, 1, stride=1, padding=0, group_num=group_num)
             else:
                 last_conv = nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False)
 
@@ -46,11 +47,11 @@ class InvertedResidual(nn.Module):
             )
         else:
             if hidden_dim>=96:
-                first_conv = FLGC(inp, hidden_dim,1,stride=1,padding=0,group_num=2)
+                first_conv = FLGC(inp, hidden_dim,1,stride=1,padding=0,group_num=group_num)
             else:
                 first_conv = nn.Conv2d(inp, hidden_dim, 1, 1, 0, bias=False)
             if oup>=96:
-                last_conv = FLGC(hidden_dim,oup,1,stride=1,padding=0,group_num=2)
+                last_conv = FLGC(hidden_dim,oup,1,stride=1,padding=0,group_num=group_num)
             else:
                 last_conv = nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False)
 
