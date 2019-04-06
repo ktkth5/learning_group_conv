@@ -35,21 +35,21 @@ def main():
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                             download=True, transform=transform_train)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=80,
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=1,
                                               shuffle=True, num_workers=2,drop_last=True)
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
                                            download=True, transform=transform_test)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=80*2,
+    testloader = torch.utils.data.DataLoader(testset, batch_size=1*2,
                                              shuffle=False, num_workers=2,drop_last=False)
 
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    net = model.MobileNetV2()
-    # net = model.MobileNetV2_flgc()
-    # net = loss_function.add_flgc_loss(net)
-    # net = model.model_module.add_eval_set(net)
+    # net = model.MobileNetV2()
+    net = model.MobileNetV2_flgc()
+    net = loss_function.add_flgc_loss(net)
+    net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -237,3 +237,8 @@ if __name__=="__main__":
     # print(a.weight.data)
     # x = torch.randn(1,1,2,2)
     # print(a(x))
+
+    t = torch.Tensor([1, 2, 3,2,2])
+    print((t == 2).nonzero())
+    a = torch.tensor([]).long()
+    print(torch.cat([a, (t==2).nonzero()]))
