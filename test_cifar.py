@@ -35,12 +35,12 @@ def main():
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                             download=True, transform=transform_train)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=1,
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=80,
                                               shuffle=True, num_workers=2,drop_last=True)
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
                                            download=True, transform=transform_test)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=1*2,
+    testloader = torch.utils.data.DataLoader(testset, batch_size=80*2,
                                              shuffle=False, num_workers=2,drop_last=False)
 
     classes = ('plane', 'car', 'bird', 'cat',
@@ -238,7 +238,7 @@ if __name__=="__main__":
     # x = torch.randn(1,1,2,2)
     # print(a(x))
 
-    t = torch.Tensor([1, 2, 3,2,2])
-    print((t == 2).nonzero())
-    a = torch.tensor([]).long()
-    print(torch.cat([a, (t==2).nonzero()]))
+    # t = torch.Tensor([1, 2, 3,2,2])
+    # print((t == 2).nonzero())
+    # a = torch.tensor([]).long()
+    # print(torch.cat([a, (t==2).nonzero()]))
