@@ -133,7 +133,7 @@ class FLGC(nn.Module):
                 self.conv_test.append(None)
             else:
                 conv = nn.Conv2d(num_input,num_filter,kernel_size=self.kernel_size,
-                                                stride=self.stride,padding=self.padding).to(self.device)
+                                                stride=self.stride,padding=self.padding,bias=False).to(self.device)
                 conv.weight.data = self.conv[list(np.where(t.cpu()==i)[0])][:,list(np.where(s.cpu()==i)[0])]
                 self.conv_test.append(conv)
             self.output_index += list(np.where(t.cpu()==i)[0])

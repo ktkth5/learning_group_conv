@@ -266,5 +266,10 @@ if __name__=="__main__":
 
     # print(a[:, perm][:,perm])
 
-    # a = nn.Conv2d(1,3,kernel_size=2)
+    # a = nn.Conv2d(1,3,kernel_size=2, bias=False)
+    # print(a.weight.data.shape)
+    # a.weight.data[0] = torch.zeros(1,1,2,2)
     # a.weight.data = torch.zeros(3,1,2,2)
+    # print(a.weight.data)
+    # x = torch.randn(1,1,2,2)
+    # print(a(x))
