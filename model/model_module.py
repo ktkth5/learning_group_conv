@@ -82,7 +82,7 @@ class FLGC(nn.Module):
                     continue
                 # print(i,"f num input, num filter", num_input, num_filter)
                 group_index = self.group_index_list[i] # group_index = np.where(s.cpu()==i)[0]
-                index_new = [feature_index.index(index) for index in group_index]
+                index_new = self.index_new_list[i] # index_new = [feature_index.index(index) for index in group_index]
                 # print(i,"f input", x[:,index_new,:,:].shape)
                 # print(f"{i} x", x.shape)
                 self.time_cp1 += time.time() - end
@@ -119,13 +119,15 @@ class FLGC(nn.Module):
         self.num_input_list = []
         self.num_filter_list = []
         self.group_index_list = []
-
+        self.index_new_list = []
+        feature_index = [i for i in range(self.input_channel)]
         for i in range(self.group_num):
             num_input = torch.sum(s==i).item()
             num_filter = torch.sum(t==i).item()
             self.num_input_list.append(num_input)
             self.num_filter_list.append(num_filter)
             self.group_index_list.append(np.where(s.cpu()==i)[0])
+            self.index_new_list.append([feature_index.index(index) for index in self.group_index_list[-1]])
             # print(i,"num input, num filter", num_input, num_filter)
             if num_input*num_filter==0:
                 self.conv_test.append(None)
