@@ -75,13 +75,13 @@ class FLGC(nn.Module):
             self.time_cp0 += time.time() - end
             end = time.time()
             for i in range(self.group_num):
-                num_input  = torch.sum(s == i).item()
-                num_filter = torch.sum(t == i).item()
+                num_input = self.num_input_list[i] # num_input  = torch.sum(s == i).item()
+                num_filter = self.num_filter_list[i] # num_filter = torch.sum(t == i).item()
                 debug_num_filter += num_filter
                 if num_input*num_filter==0:
                     continue
                 # print(i,"f num input, num filter", num_input, num_filter)
-                group_index = np.where(s.cpu()==i)[0]
+                group_index = self.group_index[i] # group_index = np.where(s.cpu()==i)[0]
                 index_new = [feature_index.index(index) for index in group_index]
                 # print(i,"f input", x[:,index_new,:,:].shape)
                 # print(f"{i} x", x.shape)
@@ -116,10 +116,16 @@ class FLGC(nn.Module):
         # print("S & T",s,t)
         self.conv_test = nn.ModuleList()
         self.output_index = []
+        self.num_input_list = []
+        self.num_filter_list = []
+        self.group_index_list = []
 
         for i in range(self.group_num):
             num_input = torch.sum(s==i).item()
             num_filter = torch.sum(t==i).item()
+            self.num_input_list.append(num_input)
+            self.num_filter_list.append(num_filter)
+            self.group_index_list.append(np.where(s.cpu()==i)[0])
             # print(i,"num input, num filter", num_input, num_filter)
             if num_input*num_filter==0:
                 self.conv_test.append(None)
