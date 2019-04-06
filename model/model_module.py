@@ -53,6 +53,7 @@ class FLGC(nn.Module):
             t = torch.argmax(t_hat, dim=1)
 
             out = torch.Tensor()
+            out_index = []
             for i in range(self.group_num):
                 # Previous Method
                 # xi = x * s_hat[:,i].view(1,-1,1,1).expand(B,self.input_channel,H,W)
@@ -65,12 +66,15 @@ class FLGC(nn.Module):
                 # New Method
                 x_index = list(np.where(s.cpu() == i)[0])
                 f_index = list(np.where(t.cpu() == i)[0])
+                out_index += f_index
                 xi = x[:, x_index] * s_hat[x_index, i].view(1,-1,1,1).expand(B, len(x_index),H,W)
-                ti = self.conv[f_index][:, x_index] * t_hat[:, f_index].view(-1,1,1,1).expand(len(f_index),len(x_index),1,1)
+                ti = self.conv[f_index][:, x_index] * t_hat[f_index,i].view(-1,1,1,1).expand(len(f_index),len(x_index),1,1)
+                # print("xi ti", xi.shape, ti.shape)
                 if i==0:
                     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
                 else:
-                    out += F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
+                    out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
+            out = out[:, out_index]
 
 
             return out
