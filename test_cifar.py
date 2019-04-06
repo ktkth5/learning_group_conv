@@ -46,10 +46,10 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    # net = model.MobileNetV2()
-    net = model.MobileNetV2_flgc()
-    net = loss_function.add_flgc_loss(net)
-    net = model.model_module.add_eval_set(net)
+    net = model.MobileNetV2()
+    # net = model.MobileNetV2_flgc()
+    # net = loss_function.add_flgc_loss(net)
+    # net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -127,9 +127,9 @@ def train(model, train_loader, criterion, optimizer, epoch):
         # print statistics
         running_loss += loss.item()
         loss_avg.update(loss.item(), inputs.size(0))
-        if i % 100 == 0:
-            print(f"epoch[{epoch}:{i}/{len(train_loader)}] loss: {running_loss/200:.4f}")
-            running_loss = 0.0
+        # if i % 100 == 0:
+        #     print(f"epoch[{epoch}:{i}/{len(train_loader)}] loss: {running_loss/200:.4f}")
+        #     running_loss = 0.0
     return loss_avg.avg
 
 def validation(model, val_loader, criterion, epoch):
