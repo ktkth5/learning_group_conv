@@ -21,12 +21,12 @@ def main():
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                             download=True, transform=transform)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=64,
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=256,
                                               shuffle=True, num_workers=2)
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
                                            download=True, transform=transform)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=64,
+    testloader = torch.utils.data.DataLoader(testset, batch_size=256*2,
                                              shuffle=False, num_workers=2)
 
     classes = ('plane', 'car', 'bird', 'cat',
@@ -39,10 +39,12 @@ def main():
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10], gamma=0.1)
 
     print("Start Training")
-    epochs = 100
+    epochs = 1
     for epoch in range(epochs):
+        scheduler.step()
         train_loss = train(net, trainloader, criterion, optimizer, epoch)
         val_acc = validation(net, testloader, criterion, epoch)
         print(f"Epoch: [{epoch}/{epochs}]"
@@ -54,7 +56,7 @@ def main():
 
     print('Finished Training')
 
-    final_val_acc = final_validation(net, testloader, epoch)
+    final_val_acc = final_validation(net, testloader)
     print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
     # correct = 0
@@ -188,7 +190,7 @@ def validation(model, val_loader, criterion, epoch):
     return 100 * float(correct / total)
 
 
-def final_validation(model, val_loader, epoch):
+def final_validation(model, val_loader):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     correct = 0
     total = 0
@@ -234,3 +236,8 @@ if __name__=="__main__":
     # net = loss_function.add_flgc_loss(net)
     # net = model.model_module.add_eval_set(net)
     # net.eval_set()
+
+    # n = np.arange(480).reshape((5, 4, 4, 6))
+    # a = torch.from_numpy(n)
+    # perm = torch.LongTensor([0, 2, 1, 3])
+    # print(a[:, perm])

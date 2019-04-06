@@ -93,12 +93,14 @@ class FLGC(nn.Module):
                     out = torch.cat([out, self.conv_test[i](x[:,index_new,:,:])], 1)
                 self.time_cp2 += time.time() - end
                 end = time.time()
-            out_new = torch.zeros_like(out)
-            for i, index in enumerate(self.output_index):
-                # print("i index", i, index)
-                out_new[:,index,:,:] = out[:,i,:,:]
+
+            out_new = out[:, self.output_index]
+            # out_new = torch.zeros_like(out)
+            # for i, index in enumerate(self.output_index):
+            #     # print("i index", i, index)
+            #     out_new[:,index,:,:] = out[:,i,:,:]
             self.time_cp3 += time.time() - end
-            # print("TIME", self.time_cp0, self.time_cp1, self.time_cp2, self.time_cp3)
+            print("TIME", self.time_cp0, self.time_cp1, self.time_cp2, self.time_cp3)
             return out_new
 
 
