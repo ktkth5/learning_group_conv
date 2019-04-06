@@ -74,6 +74,7 @@ class FLGC(nn.Module):
                     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
                 else:
                     out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
+                print("out", out.shape, t_hat, s_hat)
             out = out[:, out_index]
 
 
