@@ -84,7 +84,7 @@ class FLGC(nn.Module):
             # out_index = list(out_index.cpu())
             # out_index = [out_index.index(i) for i in range_index]
 
-            out_index = self.zeros.scatter_(0, out_index.long(), self.src).long()
+            out_index = self.zeros.scatter_(0, out_index.long().cpu(), self.src).long()
 
             out = out[:, out_index]
             return out
