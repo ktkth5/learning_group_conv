@@ -56,7 +56,7 @@ def main():
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80], gamma=0.1)
 
     print("Start Training")
     epochs = 100
@@ -75,11 +75,11 @@ def main():
     # save_checkpoint({"state_dict"},False,"cp.pth.tar","bcp.pth.tar")
     print('Finished Training')
 
-    final_val_acc, class_correct, class_total = final_validation(net, testloader)
+    # final_val_acc, class_correct, class_total = final_validation(net, testloader)
     # for i in range(10):
     #     print('Accuracy of %5s : %2d %%' % (
     #           classes[i], 100 * class_correct[i] / class_total[i]))
-    print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
+    # print(f"Final Accuracy after reordering: {final_val_acc:.2f} %%")
 
 
     # if calc flop
@@ -109,7 +109,7 @@ def train(model, train_loader, criterion, optimizer, epoch):
     model.train()
 
     end = time.time()
-    for i, (inputs, labels) in enumerate(tqdm(train_loader, 0)):
+    for i, (inputs, labels) in enumerate(train_loader, 0):
 
         inputs = inputs.to(device)
         labels = labels.to(device)
@@ -141,7 +141,7 @@ def validation(model, val_loader, criterion, epoch):
     model.eval()
     with torch.no_grad():
         start = time.time()
-        for (images, labels) in tqdm(val_loader):
+        for (images, labels) in val_loader:
             images = images.to(device)
             labels = labels.to(device)
             outputs = model(images)
@@ -167,7 +167,7 @@ def final_validation(model, val_loader):
     model.eval_set()
     with torch.no_grad():
         start = time.time()
-        for (images, labels) in tqdm(val_loader):
+        for (images, labels) in val_loader:
             images = images.to(device)
             labels = labels.to(device)
             outputs = model(images)
