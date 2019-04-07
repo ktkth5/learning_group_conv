@@ -39,6 +39,8 @@ class FLGC(nn.Module):
         self.time_cp2 = 0
         self.time_cp3 = 0
 
+        self.out_index_forward = [0 for i in range(self.output_channel)]
+
     def forward(self, x):
         """
         :param x: shape(B, input_channel, H, W)
@@ -57,30 +59,32 @@ class FLGC(nn.Module):
             out_index = torch.tensor([]).long().to(self.device)
             for i in range(self.group_num):
                 # Previous Method
-                xi = x * s_hat[:,i].view(1,-1,1,1).expand(B,self.input_channel,H,W)
-                ti = self.conv * t_hat[:,i].view(-1,1,1,1).expand(self.output_channel,self.input_channel,1,1)
-                if i==0:
-                    out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
-                else:
-                    out += F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
-
-                # New Method
-                # x_index = (s==i).nonzero().squeeze(-1)
-                # f_index = (t==i).nonzero().squeeze(-1)
-                # # print("x_index f_index", x_index.shape, f_index.shape)
-                # # out_index += f_index
-                # out_index = torch.cat([out_index, f_index],0)
-                # xi = x[:, x_index] * s_hat[x_index, i].view(1,-1,1,1).expand(B, len(x_index),H,W)
-                # ti = self.conv[f_index][:, x_index] * t_hat[f_index,i].view(-1,1,1,1).expand(len(f_index),len(x_index),1,1)
-                # # print("xi ti", xi.shape, ti.shape)
+                # xi = x * s_hat[:,i].view(1,-1,1,1).expand(B,self.input_channel,H,W)
+                # ti = self.conv * t_hat[:,i].view(-1,1,1,1).expand(self.output_channel,self.input_channel,1,1)
                 # if i==0:
                 #     out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
                 # else:
-                #     out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
+                #     out += F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
+
+                # New Method
+                x_index = (s==i).nonzero().squeeze(-1)
+                f_index = (t==i).nonzero().squeeze(-1)
+                # print("x_index f_index", x_index.shape, f_index.shape)
+                # out_index += f_index
+                out_index = torch.cat([out_index, f_index],0)
+                xi = x[:, x_index] * s_hat[x_index, i].view(1,-1,1,1).expand(B, len(x_index),H,W)
+                ti = self.conv[f_index][:, x_index] * t_hat[f_index,i].view(-1,1,1,1).expand(len(f_index),len(x_index),1,1)
+                # print("xi ti", xi.shape, ti.shape)
+                if i==0:
+                    out = F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)
+                else:
+                    out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
             # range_index = [i for i in range(self.output_channel)]
-            # out_index = list(out_index.cpu())
+            out_index = list(out_index.cpu())
             # out_index = [out_index.index(i) for i in range_index]
-            # out = out[:, out_index]
+            for i, index in enumerate(out_index):
+                self.out_index_forward[index] = i
+            out = out[:, out_index]
             return out
 
         else: # if not self.training

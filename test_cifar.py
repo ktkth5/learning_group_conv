@@ -213,7 +213,7 @@ def save_checkpoint(state, is_best, filename, best_filename):
 if __name__=="__main__":
     main()
 
-    a = [i for i in range(100)]
+    a = [i for i in range(10000)]
 
     end = time.time()
     for i in range(10000):
@@ -225,6 +225,18 @@ if __name__=="__main__":
     for i in range(10000):
         (a==1).nonzero()
     print(time.time()-end)
+
+    b = [9 for i in range(10000)]
+    end = time.time()
+    for i, index in enumerate(a):
+        b[index] = i
+    print(time.time()-end)
+
+    # b = torch.zeros(10000)
+    # end = time.time()
+    # for i, index in enumerate(a):
+    #     b[index] = i
+    # print(time.time() - end)
 
     # a = np.array([0,1,2,3,4,0,1,2,3,4])
     # print(np.where(a==0))
