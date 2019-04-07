@@ -13,7 +13,7 @@ class Block(nn.Module):
         super(Block, self).__init__()
         self.stride = stride
 
-        GROUPS = 2
+        GROUPS = 1
         planes = expansion * in_planes
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, stride=1, padding=0, bias=False, groups=GROUPS)
         self.bn1 = nn.BatchNorm2d(planes)

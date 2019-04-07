@@ -175,6 +175,7 @@ def test_training():
         # print(loss.item(), conv.conv.mean().item(), conv.S.mean().item(), conv.T.mean().item())
 
     _input[:, [0,2,3]] = 0
+    print("input\n", _input[:, :, 0])
     out = conv(_input)
     print("mid", out[:,:,0])
     conv.before_inference()
@@ -184,7 +185,6 @@ def test_training():
         out = conv(input)
         loss = criterion(out, target)
         # print(loss.item())
-    print("input\n", input[:,:,0])
     print("output\n", out[:,:,0])
 
 def apply_module(self):

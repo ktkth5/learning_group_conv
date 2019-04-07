@@ -48,10 +48,10 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    # net = model.MobileNetV2()
-    net = model.MobileNetV2_flgc()
-    net = loss_function.add_flgc_loss(net)
-    net = model.model_module.add_eval_set(net)
+    net = model.MobileNetV2()
+    # net = model.MobileNetV2_flgc()
+    # net = loss_function.add_flgc_loss(net)
+    # net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
