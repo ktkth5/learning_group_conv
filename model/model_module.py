@@ -39,7 +39,8 @@ class FLGC(nn.Module):
         self.time_cp2 = 0
         self.time_cp3 = 0
 
-        self.out_index_forward = [0 for i in range(self.output_channel)]
+        self.zeros = torch.zeros(self.output_channel)
+        self.src = torch.Tensor([i for i in range(self.output_channel)])
 
     def forward(self, x):
         """
@@ -80,10 +81,11 @@ class FLGC(nn.Module):
                 else:
                     out = torch.cat([out, F.conv2d(xi,ti,stride=self.stride,padding=self.padding,dilation=self.dilation)], 1)
             # range_index = [i for i in range(self.output_channel)]
-            out_index = list(out_index.cpu())
+            # out_index = list(out_index.cpu())
             # out_index = [out_index.index(i) for i in range_index]
-            for i, index in enumerate(out_index):
-                self.out_index_forward[index] = i
+
+            out_index = self.zeros.scatter_(0, out_index.long(), self.src).long()
+
             out = out[:, out_index]
             return out
 

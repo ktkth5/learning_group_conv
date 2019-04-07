@@ -213,24 +213,28 @@ def save_checkpoint(state, is_best, filename, best_filename):
 if __name__=="__main__":
     main()
 
-    a = [i for i in range(10000)]
-
-    end = time.time()
-    for i in range(10000):
-        a.index(1)
-    print(time.time()-end)
-
-    a = torch.Tensor(a).long()
-    end = time.time()
-    for i in range(10000):
-        (a==1).nonzero()
-    print(time.time()-end)
-
-    b = [9 for i in range(10000)]
-    end = time.time()
-    for i, index in enumerate(a):
-        b[index] = i
-    print(time.time()-end)
+    # a = [i for i in range(10000)]
+    # end = time.time()
+    # for i in range(10000):
+    #     a.index(1)
+    # print(time.time()-end)
+    # a = torch.Tensor(a).long()
+    # end = time.time()
+    # for i in range(10000):
+    #     (a==1).nonzero()
+    # print(time.time()-end)
+    # b = [9 for i in range(10000)]
+    # a = a.numpy()
+    # end = time.time()
+    # for i, index in enumerate(a):
+    #     b[index] = i
+    # print(time.time()-end)
+    # # index = torch.Tensor([1,2,3,0,4]).long()
+    # index = torch.Tensor([i for i in range(10000)]).long()
+    # src = torch.Tensor([i for i in range(10000)])
+    # end = time.time()
+    # b = torch.zeros(10000).scatter_(0, index, src)
+    # print(time.time()-end)
 
     # b = torch.zeros(10000)
     # end = time.time()
