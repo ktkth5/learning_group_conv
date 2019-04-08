@@ -56,11 +56,12 @@ def main():
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
     optimizer = torch.optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80], gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 150], gamma=0.1)
 
     print("Start Training")
-    epochs = 100
+    epochs = 500
     end = time.time()
+    best_acc = 0
     for epoch in range(epochs):
         scheduler.step()
         train_loss = train(net, trainloader, criterion, optimizer, epoch)
@@ -71,9 +72,11 @@ def main():
               f"Time: {time.time()-end:.4f}")
         end = time.time()
 
+        is_best = val_acc > best_acc
+        best_acc = max(val_acc, best_acc)
+        save_checkpoint({"state_dict": net.state_dict()},is_best,"cp.pth.tar","bcp.pth.tar")
 
-    # save_checkpoint({"state_dict"},False,"cp.pth.tar","bcp.pth.tar")
-    print('Finished Training')
+    print(f'Finished Training! best accuracy: {best_acc:.2f} %')
 
     # final_val_acc, class_correct, class_total = final_validation(net, testloader)
     # for i in range(10):
