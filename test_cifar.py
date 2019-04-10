@@ -48,10 +48,10 @@ def main():
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    # net = model.MobileNetV2()
-    net = model.MobileNetV2_flgc()
-    net = loss_function.add_flgc_loss(net)
-    net = model.model_module.add_eval_set(net)
+    net = model.MobileNetV2()
+    # net = model.MobileNetV2_flgc()
+    # net = loss_function.add_flgc_loss(net)
+    # net = model.model_module.add_eval_set(net)
 
     net = net.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
@@ -59,7 +59,7 @@ def main():
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 150], gamma=0.1)
 
     print("Start Training")
-    epochs = 500
+    epochs = 200
     end = time.time()
     best_acc = 0
     for epoch in range(epochs):
@@ -74,7 +74,7 @@ def main():
 
         is_best = val_acc > best_acc
         best_acc = max(val_acc, best_acc)
-        save_checkpoint({"state_dict": net.state_dict()},is_best,"cp.pth.tar","bcp.pth.tar")
+        save_checkpoint({"state_dict": net.state_dict()},is_best,"base_cp.pth.tar","base_bcp.pth.tar")
 
     print(f'Finished Training! best accuracy: {best_acc:.2f} %')
 
