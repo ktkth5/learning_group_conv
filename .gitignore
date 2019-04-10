@@ -2,6 +2,8 @@ data
 .idea
 cp.pth.tar
 bcp.pth.tar
+base_cp.pth.tar
+base_bcp.pth.tar
 
 
 # Byte-compiled / optimized / DLL files
